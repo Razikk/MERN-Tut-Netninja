@@ -8,6 +8,12 @@ function workoutsReducer(state, action) {
       return { workouts: action.payload };
     case "CREATE_WORKOUT":
       return { workouts: [action.payload, ...state.workouts] };
+    case "DELETE_WORKOUT":
+      return {
+        workouts: state.workouts.filter(
+          (workout) => workout._id !== action.payload._id
+        ),
+      };
     default:
       return state;
   }
@@ -16,7 +22,11 @@ function workoutsReducer(state, action) {
 function WorkoutsContextProvider({ children }) {
   const [state, dispatch] = useReducer(workoutsReducer, { workouts: null });
 
-  return <WorkoutsContext.Provider>{children}</WorkoutsContext.Provider>;
+  return (
+    <WorkoutsContext.Provider value={{ ...state, dispatch }}>
+      {children}
+    </WorkoutsContext.Provider>
+  );
 }
 
 export { WorkoutsContext, WorkoutsContextProvider, workoutsReducer };
